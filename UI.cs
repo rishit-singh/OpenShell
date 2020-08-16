@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-namespace SyntaxManager
+
+namespace OpenShell
 {
 	class UI
 	{
@@ -32,7 +33,7 @@ namespace SyntaxManager
 		};
 
 		public static string[] UITexts = new string[] { 
-			"CodeBook Syntax Manager"
+			"Open Shell UI"
 		};
 
 		public static UI.ElementConfig[] Elements = new UI.ElementConfig[] {
