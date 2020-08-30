@@ -1,2 +1,2 @@
 # OpenShell
-Open Command Line Interface. 
+General purpose commandline interface. 
