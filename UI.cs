@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-namespace OpenShell
+namespace OpenShell.UI
 {
-	class UI
+	public class ShellUI
 	{
 		public enum DecorChar
 		{ 
@@ -36,11 +36,21 @@ namespace OpenShell
 			"Open Shell UI"
 		};
 
-		public static UI.ElementConfig[] Elements = new UI.ElementConfig[] {
-			new UI.ElementConfig(UI.UITexts[(int)UI.UIText.Heading], UI.DecorChars[(int)UI.DecorChar.Hyphen], ElementConfig.H_Alignment.Center, ElementConfig.V_Alignment.Middle) //UI.UITexts[x] exceptions to be handled, later
+		public static ShellUI.ElementConfig[] Elements = new ShellUI.ElementConfig[] {
+			new ShellUI.ElementConfig(ShellUI.UITexts[(int)ShellUI.UIText.Heading], ShellUI.DecorChars[(int)ShellUI.DecorChar.Hyphen], ElementConfig.H_Alignment.Center, ElementConfig.V_Alignment.Middle) //UI.UITexts[x] exceptions to be handled, later
 		};
 
 		
+		public struct UIConfig	// 	Configuration for the current UI instance
+		{
+			string UITitle;
+
+			public UIConfig(string uiTitle)
+			{
+				this.UITitle = uiTitle;	
+			}
+		}
+
 		public struct ElementConfig
 		{
 
@@ -155,13 +165,13 @@ namespace OpenShell
 				this.vAlignment = new Margin();
 			}
 
-			public ElementConfig(string text, UI.DecorChar decorChar)
+			public ElementConfig(string text, ShellUI.DecorChar decorChar)
 			{
 				this.Text = text;
 
 				try
 				{
-					this.DecorChar = UI.DecorChars[(int)decorChar];
+					this.DecorChar = ShellUI.DecorChars[(int)decorChar];
 				}
 				catch (IndexOutOfRangeException e)
 				{
@@ -203,13 +213,13 @@ namespace OpenShell
 				this.vAlignment = new Margin();
 			}
 
-			public ElementConfig(string text, UI.DecorChar decorChar, ElementConfig.H_Alignment h_align, ElementConfig.V_Alignment v_align)
+			public ElementConfig(string text, ShellUI.DecorChar decorChar, ElementConfig.H_Alignment h_align, ElementConfig.V_Alignment v_align)
 			{
 				this.Text = text;
 
 				try
 				{
-					this.DecorChar = UI.DecorChars[(int)decorChar];
+					this.DecorChar = ShellUI.DecorChars[(int)decorChar];
 				}
 				catch (IndexOutOfRangeException e)
 				{
@@ -260,7 +270,7 @@ namespace OpenShell
 				}
 			}
 
-			public ElementConfig(string text, UI.DecorChar decorChar, ElementConfig.H_Alignment h_align, ElementConfig.V_Alignment v_align, int decorTimes, int decorLines)
+			public ElementConfig(string text, ShellUI.DecorChar decorChar, ElementConfig.H_Alignment h_align, ElementConfig.V_Alignment v_align, int decorTimes, int decorLines)
 			{
 				this.Text = text;
 
@@ -269,7 +279,7 @@ namespace OpenShell
 
 				try
 				{
-					this.DecorChar = UI.DecorChars[(int)decorChar];
+					this.DecorChar = ShellUI.DecorChars[(int)decorChar];
 				}
 				catch (IndexOutOfRangeException e)
 				{
@@ -307,13 +317,13 @@ namespace OpenShell
 				this.vAlignment = ElementConfig.Nulls.MarginNull;
 			}
 
-			public ElementConfig(string text, UI.DecorChar decorChar, int decorTimes, int decorLines)
+			public ElementConfig(string text, ShellUI.DecorChar decorChar, int decorTimes, int decorLines)
 			{
 				this.Text = text;
 
 				try
 				{
-					this.DecorChar = UI.DecorChars[(int)decorChar];
+					this.DecorChar = ShellUI.DecorChars[(int)decorChar];
 				}
 				catch (IndexOutOfRangeException e)
 				{
@@ -341,14 +351,14 @@ namespace OpenShell
 			return str;
 		}
 
-		public static string MultiplyChar(UI.DecorChar single, int times)
+		public static string MultiplyChar(ShellUI.DecorChar single, int times)
 		{
 			string str = null;
 			char chr = new System.Char();
 
 			try
 			{
-				chr = UI.DecorChars[(int)single];
+				chr = ShellUI.DecorChars[(int)single];
 			}
 			catch (IndexOutOfRangeException e)
 			{
@@ -361,12 +371,12 @@ namespace OpenShell
 			return str;
 		}
 
-		public static void IterPrint(UI.DecorChar decorChar, int times)
+		public static void IterPrint(ShellUI.DecorChar decorChar, int times)
 		{
 			try
 			{
 				for (int x = 0; x < times; x++)
-					Console.Write(UI.DecorChars[(int)decorChar]);
+					Console.Write(ShellUI.DecorChars[(int)decorChar]);
 			}
 			catch (IndexOutOfRangeException e)
 			{
@@ -377,13 +387,13 @@ namespace OpenShell
 			}
 		}
 
-		public static void IterPrint(UI.DecorChar decorChar, int times, long lines) //long was used just to prevent errors
+		public static void IterPrint(ShellUI.DecorChar decorChar, int times, long lines) //long was used just to prevent errors
 		{
 			try
 			{
 				for (int x = 0; x < lines; x++)
 					for (int y = 0; y < times; y++)
-						Console.Write(UI.DecorChars[(int)decorChar]);
+						Console.Write(ShellUI.DecorChars[(int)decorChar]);
 			}
 			catch (IndexOutOfRangeException e)
 			{
@@ -394,12 +404,12 @@ namespace OpenShell
 			}
 		}
 
-		public static void IterPrint(UI.DecorChar decorChar, int times, int spaces)
+		public static void IterPrint(ShellUI.DecorChar decorChar, int times, int spaces)
 		{
 			try
 			{
 				for (int x = 0; x < times; x++)
-					Console.Write($"{UI.DecorChars[(int)decorChar]}{UI.MultiplyChar(UI.DecorChars[(int)decorChar], spaces)}");
+					Console.Write($"{ShellUI.DecorChars[(int)decorChar]}{ShellUI.MultiplyChar(ShellUI.DecorChars[(int)decorChar], spaces)}");
 			}
 			catch (IndexOutOfRangeException e)
 			{
@@ -410,13 +420,13 @@ namespace OpenShell
 			}
 		}
 
-		public static void IterPrint(UI.DecorChar decorChar, int times, int lines, int spaces)
+		public static void IterPrint(ShellUI.DecorChar decorChar, int times, int lines, int spaces)
 		{
 			try
 			{
 				for (int x = 0; x < lines; x++)
 					for (int y = 0; y < times; y++)
-						Console.Write($"{UI.DecorChars[(int)decorChar]}{UI.MultiplyChar(UI.DecorChars[(int)decorChar], spaces)}");
+						Console.Write($"{ShellUI.DecorChars[(int)decorChar]}{ShellUI.MultiplyChar(ShellUI.DecorChars[(int)decorChar], spaces)}");
 			}
 			catch (IndexOutOfRangeException e)
 			{
@@ -427,15 +437,15 @@ namespace OpenShell
 			}
 		}
 
-		public static bool SetupElement(UI.Element element)
+		public static bool SetupElement(ShellUI.Element element)
 		{
-			UI.ElementConfig currentElement = new UI.ElementConfig();
+			ShellUI.ElementConfig currentElement = new ShellUI.ElementConfig();
 
 			string PrintStr = null;
 			
 			try
 			{
-				currentElement = UI.Elements[(int)element];
+				currentElement = ShellUI.Elements[(int)element];
 			}
 			catch (IndexOutOfRangeException e)
 			{
@@ -444,7 +454,7 @@ namespace OpenShell
 				return false;
 			}
 
-			PrintStr = $"{UI.MultiplyChar('\n', currentElement.vAlignment.Y)}{UI.MultiplyChar(UI.DecorChar.Space, currentElement.hAlignment.X)}{UI.Elements[(int)element].Text}\n{UI.MultiplyChar(UI.DecorChar.Hyphen, 120)}\n"; //formatted string to be printed.
+			PrintStr = $"{ShellUI.MultiplyChar('\n', currentElement.vAlignment.Y)}{ShellUI.MultiplyChar(ShellUI.DecorChar.Space, currentElement.hAlignment.X)}{ShellUI.Elements[(int)element].Text}\n{ShellUI.MultiplyChar(ShellUI.DecorChar.Hyphen, 120)}\n"; //formatted string to be printed.
 
 			Console.Write(PrintStr);
 			
@@ -453,7 +463,7 @@ namespace OpenShell
 
 		public static void Setup()
 		{
-			UI.SetupElement(UI.Element.Header); //sets up the headerS
+			ShellUI.SetupElement(ShellUI.Element.Header); //sets up the headerS
 		}
 	}
 }
