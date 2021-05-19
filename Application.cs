@@ -68,7 +68,7 @@ namespace OpenShell
 		/// Serializes the Application instances in the Applications stack into binary files.
 		/// </summary>
 		/// <returns> Serialization state represented by a bool. </returns>
-		public static bool SerializeApplicaions()
+		public static bool SerializeApplications()
 		{
 			Application[] StackArray = ExecutionData.Applications.ToArray();
 
@@ -88,10 +88,11 @@ namespace OpenShell
 		/// <summary>
 		/// Deserializes all the applications from the default directory and pushed them to the Applications stack.
 		/// </summary>
-		public static bool DeserializeApplicaions()
 		/// <returns> Deserialization success state represented by a bool. </returns>
+		public static bool DeserializeApplicaions()
 		{
 			string[] ApplicationBinaryFiles = ArrayTools.IEnumerableToArray<string>(Directory.EnumerateFiles(ExecutionData.ApplicationBinaryPath));
+		
 			if (ApplicationBinaryFiles.Length == 0)
 				return false;
 

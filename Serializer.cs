@@ -15,9 +15,21 @@ namespace OpenShell.Serialization
 			
 			stream = File.Open(byteFilePath, FileMode.OpenOrCreate);
   
-			binaryFormatter.Serialize(stream, instance);
+			try
+			{
+				binaryFormatter.Serialize(stream, instance);
+			}
+			catch (SerializationException e)
+			{
+				Error.Log($"Serialization failed with errors: {e.Message}");
+				
+				stream.Close();
 
+				return false;
+			}
+			
 			stream.Close();
+			
 
 			return true;
 		}
@@ -28,7 +40,7 @@ namespace OpenShell.Serialization
 
 			BinaryFormatter binaryFormatter = new BinaryFormatter();
 
-			T DeserializedBinary;
+			T? DeserializedBinary;
 			
 			try
 			{
@@ -38,10 +50,21 @@ namespace OpenShell.Serialization
 			{
 				Error.Log($"{byteFilePath} was not found.");
 
-				return (T)(new Object());
+				return default(T);
 			}
 
-			DeserializedBinary = (T)binaryFormatter.Deserialize(stream);
+			try
+			{
+				DeserializedBinary = (T)binaryFormatter.Deserialize(stream);
+			}
+			catch (SerializationException e)
+			{
+				Error.Log($"Serialization failed with errors: {e.Message}");
+				
+				stream.Close();
+
+				return default(T);
+			}
 
 			stream.Close(); 
 

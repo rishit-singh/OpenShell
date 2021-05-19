@@ -21,6 +21,12 @@ namespace OpenShell
 
 		public string PromptString;	//	String to be used as a prompting message for default shell prompts.
 	
+
+		/// <summary>
+		/// Adds all the provided application instances to the ApplicationStack
+		/// </summary>
+		/// <param name="applications"></param>
+		/// <returns></returns>
 		private bool BuildApplicationStack(Application[] applications)
 		{
 			if (applications.Length <= 0)
@@ -32,6 +38,12 @@ namespace OpenShell
 			return true;
 		}
 
+
+		/// <summary>
+		/// Hashes all the application provided in the applications array.
+		/// </summary>
+		/// <param name="applications"> Array of Application instances. </param>
+		/// <returns> Hashtable containing Application instances hashed to their respective commands. </returns>
 		public Hashtable HashApplications(Application[] applications)	//	hashes the applications with their names on shell start
 		{
 			Hashtable applicationHash = new Hashtable(); 
@@ -43,6 +55,12 @@ namespace OpenShell
 
 			return applicationHash;
 		}
+
+		/// <summary>
+		/// Returns the sAppFunction delegate hashed to the provied command.
+		/// </summary>
+		/// <param name="command"> Command </param>
+		/// <returns> Hashed sAppFunction delegate. </returns>
 		public sAppFunction GetAppFunction(Command command)		//	Returns the application function delegate	
 		{
 			sAppFunction appFunction = null;
@@ -66,6 +84,11 @@ namespace OpenShell
 			return appFunction;
 		}
 
+		/// <summary>
+		/// Returns the app function hashed to the provided command.
+		/// </summary>
+		/// <param name="command"></param>
+		/// <returns></returns>
 		private sAppFunction GetHashedAppFuction(string command)
 		{
 			sAppFunction appFunction = null;
@@ -207,8 +230,7 @@ namespace OpenShell
 								sAppFunction appFunction = null;
 
 								if ((appFunction = this.GetAppFunction(command)) != null)
-									return appFunction(command.Parameters);				
-									
+									return appFunction(command.Parameters);													
 		
 								throw new CommandNotFoundException(command);
 							}

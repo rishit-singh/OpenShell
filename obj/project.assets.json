@@ -8,19 +8,19 @@
     "net5.0": []
   },
   "packageFolders": {
-    "/home/rishit/.nuget/packages/": {}
+    "/home/hpnb12/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/media/rishit/HDD0/src/repos/OpenShell/OpenShell.csproj",
+      "projectUniqueName": "/home/hpnb12/src/repos/OpenShell/OpenShell.csproj",
       "projectName": "OpenShell",
-      "projectPath": "/media/rishit/HDD0/src/repos/OpenShell/OpenShell.csproj",
-      "packagesPath": "/home/rishit/.nuget/packages/",
-      "outputPath": "/media/rishit/HDD0/src/repos/OpenShell/obj/",
+      "projectPath": "/home/hpnb12/src/repos/OpenShell/OpenShell.csproj",
+      "packagesPath": "/home/hpnb12/.nuget/packages/",
+      "outputPath": "/home/hpnb12/src/repos/OpenShell/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/rishit/.nuget/NuGet/NuGet.Config"
+        "/home/hpnb12/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net5.0"
@@ -58,7 +58,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/5.0.202/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/5.0.203/RuntimeIdentifierGraph.json"
       }
     }
   }
