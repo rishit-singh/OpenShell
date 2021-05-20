@@ -6,16 +6,21 @@ using OpenShell.Errors;
 
 namespace OpenShell
 {
-	public struct Command
+	public struct Command : IComparable<Command>
 	{
 
 		/// <summary>
 		/// Stores the Flag information.
 		/// </summary>
-		public struct Flag
+		public struct Flag : IComparable<Flag>
 		{
 			public string FlagString,
 			Value;
+
+			public bool IsEqual(Flag command)
+			{
+				return (this.FlagString == command.FlagString && this.Value == command.Value);
+			}
 
 			public Flag(string flagString, string value) 
 			{
@@ -23,6 +28,12 @@ namespace OpenShell
 				this.Value = value;	
 			}
 		}
+
+		public bool IsEqual(Command command)
+		{
+			return (this.CommandString == command.CommandString &&
+					this.Aliases == command.Aliases);
+		}	
 
 		public string CommandString; 
 

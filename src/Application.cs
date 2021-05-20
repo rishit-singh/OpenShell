@@ -36,7 +36,7 @@ namespace OpenShell
 		public AppConfiguration Configuration;	//	Stores the app config for current instance
 
 		public sAppFunction ApplicationFunction;	//	delegate to the main app function
-	
+
 		public string Run()	//	Starts the app function
 		{
 			this.ApplicationFunction(this.Configuration.AppCommand.Parameters);

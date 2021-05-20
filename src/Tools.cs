@@ -45,6 +45,27 @@ namespace OpenShell.Tools
 
 			return IEnumStack.ToArray();
 		}
+
+		public static bool ArrayCmp<T>(T[] array, T[] array1)
+		{
+			if (array1.Length < array.Length)
+				return false;
+
+			for (int x = 0; x < array.Length; x++)
+				if (!array[x].Equals(array1[x]))
+					return false;
+
+			return true;
+		}	
+
+		public static bool IsElement(Command.Flag flag, Command.Flag[] flags)
+		{
+			for (int x = 0; x < flags.Length; x++)
+				if (flag.IsEqual(flags[x]))
+					return true;
+					
+			return false;
+		}
 	}
 
 	public class StringTools
