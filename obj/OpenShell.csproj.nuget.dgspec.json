@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/hpnb12/src/repos/OpenShell/OpenShell.csproj": {}
+    "/home/coderish/src/repos/OpenShell/OpenShell.csproj": {}
   },
   "projects": {
-    "/home/hpnb12/src/repos/OpenShell/OpenShell.csproj": {
+    "/home/coderish/src/repos/OpenShell/OpenShell.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/hpnb12/src/repos/OpenShell/OpenShell.csproj",
+        "projectUniqueName": "/home/coderish/src/repos/OpenShell/OpenShell.csproj",
         "projectName": "OpenShell",
-        "projectPath": "/home/hpnb12/src/repos/OpenShell/OpenShell.csproj",
-        "packagesPath": "/home/hpnb12/.nuget/packages/",
-        "outputPath": "/home/hpnb12/src/repos/OpenShell/obj/",
+        "projectPath": "/home/coderish/src/repos/OpenShell/OpenShell.csproj",
+        "packagesPath": "/home/coderish/.nuget/packages/",
+        "outputPath": "/home/coderish/src/repos/OpenShell/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/hpnb12/.nuget/NuGet/NuGet.Config"
+          "/home/coderish/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net5.0"
@@ -52,7 +52,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/5.0.203/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/5.0.203/RuntimeIdentifierGraph.json"
         }
       }
     }

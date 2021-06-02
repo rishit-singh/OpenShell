@@ -6,36 +6,112 @@ using OpenShell.Errors;
 
 namespace OpenShell
 {
+
 	public struct Command : IComparable<Command>
 	{
 
 		/// <summary>
 		/// Stores the Flag information.
 		/// </summary>
+
 		public struct Flag : IComparable<Flag>
 		{
 			public string FlagString,
 			Value;
+			
+			private Stack<string> DefaultValueStack;	//	Stores temporary values to be asssigned added to the DefaulValues array later.
 
+				public string[] DefaultValues;	//	Default values of the flag.
+
+			/// <summary>
+			/// IComparable<Command> interface implementation.
+			/// </summary>
+			/// <param name="command"></param>
+			/// <returns> Bool represnting if the condition was met. </returns>
 			public bool IsEqual(Flag command)
 			{
 				return (this.FlagString == command.FlagString && this.Value == command.Value);
 			}
 
-			public Flag(string flagString, string value) 
+			/// <summary>
+			/// Checks if the current instance follows the null criteria.
+			/// </summary>
+			/// <returns> Bool reperesnting whether the current instance is null. </returns>
+			public bool IsNull()
+			{
+				return (this.FlagString == null &&
+						this.Value == null);
+			}
+
+			/// <summary>
+			/// Checks if the current instance is a single flag.
+			/// </summary>
+			/// <returns> Bool representing whether the current instance is a single flag. </returns>
+			
+			public bool IsSingle()
+			{
+				return (this.FlagString != null && this.Value == null);
+			}
+			
+
+			public Flag(string flagString)
 			{
 				this.FlagString = flagString;
+				this.Value = null;
+
+				this.DefaultValueStack = null;
+				this.DefaultValues = null;
+			}
+
+			public Flag(string flagString, bool raw)
+			{
+				this.DefaultValueStack = new Stack<string>();
+				
+				this.FlagString = null;
+				this.Value = null;
+
+				if (raw)
+					this.Value = flagString;	
+				else
+					this.FlagString = flagString;
+
+				this.DefaultValueStack.Push(this.Value);
+
+				this.DefaultValues = this.DefaultValueStack.ToArray();
+			}
+
+			public Flag(string flagString, string value)
+			{
+				this.DefaultValueStack = new Stack<string>();
+				
+				this.FlagString = flagString;
 				this.Value = value;	
+
+				this.DefaultValueStack.Push(this.Value);
+
+				this.DefaultValues = this.DefaultValueStack.ToArray();
+			}
+	
+			public Flag(string flagString, string value, string[] defaultValues) 
+			{
+				this.DefaultValueStack = new Stack<string>();
+				
+				this.FlagString = flagString;
+				this.Value = value;	
+
+				this.DefaultValueStack.Push(this.Value);
+
+				this.DefaultValues = this.DefaultValueStack.ToArray();
 			}
 		}
 
 		public bool IsEqual(Command command)
 		{
 			return (this.CommandString == command.CommandString &&
-					this.Aliases == command.Aliases);
+				Tools.ArrayTools.ArrayCmp<string>(this.Aliases, command.Aliases));
 		}	
 
-		public string CommandString; 
+		public string CommandString;	//	Command identifier string. 
 
 		public string[] Aliases;	//	Aliases of the current command instances.
 
@@ -96,6 +172,31 @@ namespace OpenShell
 				this.Flags = this.GetFlags();
 			}
 		}
+	
+		public Command(string command, Flag[] defaultFlags)
+		{
+			this.Flags = null;
+
+			if (command == null || command == "")
+			{
+				this.CommandString = null;
+				this.Aliases = null;
+				this.Parameters = null;
+			}
+			else
+			{
+				string[] SplittedString = StringTools.Split(command, ' ');
+
+				this.CommandString = SplittedString[0]; 
+
+				this.Parameters = ArrayTools.OmitElementAtIndex<string>(SplittedString, 0);
+				this.Aliases = null;
+	
+				// ArrayTools.PrintArray<string>(this.Parameters);
+			}
+
+			this.Flags = defaultFlags;
+		}
 
 	}
 
@@ -136,6 +237,32 @@ namespace OpenShell
 		public UnhashedApplicationsException()
 		{
 			this.Message = "The available applications were not hashed.";
+		}
+	}
+	
+
+	/// <summary>
+	/// Exception thrown when and invalid flag instance is detecteds
+	/// </summary>
+	public class InvalidFlagException : Error
+	{
+		// string Message;
+
+		public InvalidFlagException()
+		{
+			this.Message = "Provided Flag instance is invalid.";
+		}
+	}
+
+
+	/// <summary>
+	/// Exception thrown when an unknown Flag is detected.
+	/// </summary>
+	public class UnkownFlagException : Error
+	{	
+		public UnkownFlagException(string flagString)
+		{
+			this.Message = $"-{flagString} does not exist in the default flags.";
 		}
 	}
 }

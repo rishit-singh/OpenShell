@@ -58,6 +58,12 @@ namespace OpenShell.Tools
 			return true;
 		}	
 
+		/// <summary>
+		/// Checks if the provided Command.Flag instance exits in the provided Command.Flag[] array.
+		/// </summary>
+		/// <param name="flag"> Command.Flag instance. </param>
+		/// <param name="flags"> Command.Flag[] array. </param>
+		/// <returns> Bool representing if the condition is met. </returns>
 		public static bool IsElement(Command.Flag flag, Command.Flag[] flags)
 		{
 			for (int x = 0; x < flags.Length; x++)
@@ -65,6 +71,30 @@ namespace OpenShell.Tools
 					return true;
 					
 			return false;
+		}
+		
+		public static int BinarySearch(string flagString, Command.Flag[] flags, int start, int end)
+		{
+			if (start < end)
+			{
+				int mid = start - end / 2;
+
+				if (flagString.CompareTo(flags[mid].FlagString) == -1)
+					ArrayTools.BinarySearch(flagString, flags, start, mid);
+
+				if (flagString.CompareTo(flags[mid].FlagString) == 1)
+					ArrayTools.BinarySearch(flagString, flags, mid, end);
+
+				if (flagString.CompareTo(flags[mid].FlagString) == 0)
+					return mid;
+			}
+
+			return -1;
+		}
+
+		public static int BinarySearch(string flagString, Command.Flag[] flags)
+		{
+			return ArrayTools.BinarySearch(flagString, flags, 0, flags.Length);		
 		}
 	}
 
@@ -164,6 +194,23 @@ namespace OpenShell.Tools
 
 
 			return AlteredString;	
+		}
+
+		public static string GetSubString(string str, int start, int end)
+		{
+			string subString = null;
+
+			if ((end > str.Length || end < start) || (start < 0 || start > end))
+			{
+				Error.Log("Invalid start or end index provided.");	
+
+				return null;
+			}
+
+			for (int x = start; x <= end; x++)
+				subString += str[x];
+
+			return subString;
 		}
 	}
 }

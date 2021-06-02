@@ -61,9 +61,9 @@ namespace OpenShell
 		/// </summary>
 		/// <param name="command"> Command </param>
 		/// <returns> Hashed sAppFunction delegate. </returns>
-		public sAppFunction GetAppFunction(Command command)		//	Returns the application function delegate	
+		public aAppFunction GetAppFunction(Command command)		//	Returns the application function delegate	
 		{
-			sAppFunction appFunction = null;
+			aAppFunction appFunction = null;
 
 			try 
 			{
@@ -72,7 +72,7 @@ namespace OpenShell
 					throw new UnhashedApplicationsException();
 				}
 			
-				Console.WriteLine($"Function Call {appFunction(new string[] {})}");
+				Console.WriteLine($"Function Call {appFunction(new ApplicationArgument())}");
 
 				return appFunction;
 			}
@@ -89,19 +89,19 @@ namespace OpenShell
 		/// </summary>
 		/// <param name="command"></param>
 		/// <returns></returns>
-		private sAppFunction GetHashedAppFuction(string command)
+		private aAppFunction GetHashedAppFuction(string command)
 		{
-			sAppFunction appFunction = null;
+			aAppFunction appFunction = null;
 
 			if (command == null)
-				return new sAppFunction((string[] str) => null); 
+				return new aAppFunction((ApplicationArgument argument) => null); 
 
 			try
 			{
 				if (this.AppsHashed)
 					try
 					{
-						appFunction = (sAppFunction)this.ApplicationHash[command];
+						appFunction = (aAppFunction)this.ApplicationHash[command];
 					}
 					catch (KeyNotFoundException e)
 					{
@@ -227,10 +227,10 @@ namespace OpenShell
 						default:
 							try
 							{
-								sAppFunction appFunction = null;
+								aAppFunction appFunction = null;
 
 								if ((appFunction = this.GetAppFunction(command)) != null)
-									return appFunction(command.Parameters);													
+									return appFunction(new ApplicationArgument());													
 		
 								throw new CommandNotFoundException(command);
 							}

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "vR5YMMBMesKp6bKKhj3z7s9Jf0FXYLfEc03CZXek6ZxuTbIT6Rc4v9epLyGmEK3OmZJ/2ND4YYKZLcRIrUe2Bg==",
+  "dgSpecHash": "+5omIixzePT4SweYI4NV9LWOcqesf76xmGzWm/r3Sr0uwFoG95yCIBP8G6UbmSTUO/IcJBC3A/T+W5yNJCRpmQ==",
   "success": true,
-  "projectFilePath": "/home/hpnb12/src/repos/OpenShell/OpenShell.csproj",
+  "projectFilePath": "/home/coderish/src/repos/OpenShell/OpenShell.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
