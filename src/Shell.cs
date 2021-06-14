@@ -17,10 +17,9 @@ namespace OpenShell
 		
 		public bool AppsHashed;	// Represents the status of Applicatio	nHash
 	
-		private bool IsRunning = false;	//	Represents the status of the shell
-
-		public string PromptString;	//	String to be used as a prompting message for default shell prompts.
+		private bool IsRunning = false;	//	Represents the status of the shell		public string PromptString;	//	String to be used as a prompting message for default shell prompts.
 	
+		public string PromptString;
 
 		/// <summary>
 		/// Adds all the provided application instances to the ApplicationStack
@@ -49,7 +48,7 @@ namespace OpenShell
 			Hashtable applicationHash = new Hashtable(); 
 			
 			for (int x = 0; x < applications.Length; x++)
-				applicationHash.Add(applications[x].Configuration.AppCommand.CommandString.ToLower(), applications[x].ApplicationFunction);
+				applicationHash.Add(applications[x].Configuration.AppCommand.CommandString.ToLower(), applications[x]);
 
 			this.AppsHashed = true;
 
@@ -59,29 +58,29 @@ namespace OpenShell
 		/// <summary>
 		/// Returns the sAppFunction delegate hashed to the provied command.
 		/// </summary>
-		/// <param name="command"> Command </param>
+		/// <param name="command"> Command instance. </param>
 		/// <returns> Hashed sAppFunction delegate. </returns>
-		public aAppFunction GetAppFunction(Command command)		//	Returns the application function delegate	
+		public Application GetApplication(Command command)		//	Returns the application function delegate	
 		{
-			aAppFunction appFunction = null;
+			Application application = null;
 
 			try 
 			{
-				if ((appFunction = this.GetHashedAppFuction(command.CommandString)) == null)
+				if ((application = this.GetHashedApplication(command.CommandString)) == null)
 				{
 					throw new UnhashedApplicationsException();
 				}
 			
-				Console.WriteLine($"Function Call {appFunction(new ApplicationArgument())}");
+				Console.WriteLine($"Function Call {application.Run()}");
 
-				return appFunction;
+				return application;
 			}
 			catch (UnhashedApplicationsException e)
 			{
 				e.Log();
 			}
 			
-			return appFunction;
+			return application;
 		}
 
 		/// <summary>
@@ -89,25 +88,25 @@ namespace OpenShell
 		/// </summary>
 		/// <param name="command"></param>
 		/// <returns></returns>
-		private aAppFunction GetHashedAppFuction(string command)
+		private Application GetHashedApplication(string command)
 		{
-			aAppFunction appFunction = null;
+			Application application = null;
 
 			if (command == null)
-				return new aAppFunction((ApplicationArgument argument) => null); 
+				return new Application(new aAppFunction((ApplicationArgument argument) => null)); 
 
 			try
 			{
 				if (this.AppsHashed)
 					try
 					{
-						appFunction = (aAppFunction)this.ApplicationHash[command];
+						application = (Application)this.ApplicationHash[command];
 					}
 					catch (KeyNotFoundException e)
 					{
 						Error.Log(e);
 
-						return appFunction;	
+						return application;	
 					}
 				else
 					throw new UnhashedApplicationsException();
@@ -118,7 +117,7 @@ namespace OpenShell
 				e.Log();
 			}	
 
-			return appFunction;
+			return application;
 		}
 
 		/// <summary>
@@ -130,7 +129,7 @@ namespace OpenShell
 		{
 			this.ApplicationStack.Push(application);
 		
-			this.ApplicationHash.Add(application.Configuration.AppCommand.CommandString, application.ApplicationFunction);
+			this.ApplicationHash.Add(application.Configuration.AppCommand.CommandString, application);
 
 			return application; 
 		}
@@ -138,7 +137,7 @@ namespace OpenShell
 		/// <summary>
 		/// Starts the shell.
 		/// </summary>
-		/// <returns> Bool representing thje success/failure of the </returns>
+		/// <returns> Bool representing if the shell was started successfully. </returns>
 		public bool Start()	//	Starts the shell.
 		{
 			this.IsRunning = true;			
@@ -155,7 +154,9 @@ namespace OpenShell
 		public bool RunShellLoop()	
 		{
 			while (this.IsRunning)
+			{	
 				this.Print(this.ExecuteCommand(new Command(this.Prompt(this.PromptString))));
+			}
 	
 			return true;
 		}
@@ -207,15 +208,15 @@ namespace OpenShell
 		/// <returns> Delegates refering to the respective command, null when invalid. </returns>
 		public string ExecuteCommand(Command command)
 		{
+			Program.Debug.Log($"CommandString: {command.CommandString}");
+
 			try
 			{
 				if (this.AppsHashed)
 					switch (command.CommandString) 
 					{
-						case "\n":
-							Console.Write("null"); 
-
-							return  null;
+						case null:
+							return null;
 
 							break;
 
@@ -227,10 +228,10 @@ namespace OpenShell
 						default:
 							try
 							{
-								aAppFunction appFunction = null;
+								Application application = null;
 
-								if ((appFunction = this.GetAppFunction(command)) != null)
-									return appFunction(new ApplicationArgument());													
+								if ((application = this.GetApplication(command)) != null)
+									return application.Run(command);
 		
 								throw new CommandNotFoundException(command);
 							}

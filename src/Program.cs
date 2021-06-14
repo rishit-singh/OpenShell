@@ -10,18 +10,31 @@ namespace OpenShell
 
 		static void Main(string[] args)
 		{	
-			
-			Application application = new Application(
-				new AppConfiguration("Foo", new Command("foo", new Command.Flag[] { new Command.Flag("flag"), new Command.Flag("flag1") } )),
-													(ApplicationArgument applicationArgument) => {
-															Console.WriteLine($"FlagStrings: {applicationArgument.Flags[0].FlagString}");
+			// Command.Flag[] flags = new Command.Flag[] {
+			// 	new Command.Flag("flag"),
+			// 	new Command.Flag("flag1"),
+			// 	new Command.Flag("flag3"),
+			// 	new Command.Flag("flag2")
+			// };
 
+			// Tools.ArrayTools.BubbleSort(flags);
+
+			// for (int x = 0; x < flags.Length; x++)
+			// 	Debug.Log(flags[x].FlagString);
+
+			// Console.WriteLine();
+
+			// Debug.Log($"{Tools.ArrayTools.BinarySearch("flag", flags, 0, flags.Length)}");
+
+			Application application = new Application(new AppConfiguration("Foo", new Command("foo", new Command.Flag[] { new Command.Flag("flag"), new Command.Flag("flag1") } )),
+													(ApplicationArgument applicationArgument) => {
+															// Program.PrintApplicationArgument(applicationArgument);
 															return null;
 														}
 													);
 
 
-			// application.Run();
+			application.Run();
 
 			// Shell shell = new Shell(new Application[] { new Application(new AppConfiguration("TestApp", new Command("command")), new sAppFunction((string[] args) => { return "app called"; })), new Application(new AppConfiguration("TestApp", new Command("command1")), new sAppFunction((string[] args) => { return "app1 called"; })) } );
 			
@@ -29,15 +42,15 @@ namespace OpenShell
 
 			shell.PromptString = "osh";
 
-			// shell.AddApplication(new Application(
-			// 	new AppConfiguration("clear", new Command("clear")),
-			// 	new sAppFunction((string[] args) => {
-			// 		Console.Clear();
-			// 		shell.RunShellLoop();
+			shell.AddApplication(new Application(
+				new AppConfiguration("clear", new Command("clear")),
+						new aAppFunction((ApplicationArgument args) => {
+						Console.Clear();
+						shell.RunShellLoop();
 					
-			// 		return null;
-			// 	})
-			// ));0
+						return null;
+					})
+				));
 
 			shell.Start(); 
 		}  
@@ -59,6 +72,6 @@ namespace OpenShell
 			Console.WriteLine("Raw Values:");
 			for (int x = 0; x < applicationArgument.RawValues.Length; x++)
 				Console.WriteLine($"{applicationArgument.RawValues[x]}");
-		}
+		}	
 	}
 }

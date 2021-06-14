@@ -53,8 +53,6 @@ namespace OpenShell.UI
 
 		public struct ElementConfig
 		{
-
-			//Implemented due to misunderstanding. But might be required later.
 			public struct Margin
 			{
 				public int X, Y, X_neg, Y_neg;
@@ -197,6 +195,7 @@ namespace OpenShell.UI
 				this.V_Align = v_align;
 				this.DecorTimes = ElementConfig.DefaultDecorTimes;
 				this.DecorLines = 0;
+			
 				try
 				{
 					this.hAlignment = ElementConfig.Margins[0, (int)H_Align];
@@ -209,6 +208,7 @@ namespace OpenShell.UI
 					this.hAlignment = new ElementConfig.Margin();
 					this.vAlignment = new ElementConfig.Margin();
 				}
+			
 				this.hAlignment = ElementConfig.Margins[0, (int)h_align];
 				this.vAlignment = new Margin();
 			}

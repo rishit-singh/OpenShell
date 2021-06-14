@@ -52,8 +52,7 @@ namespace OpenShell
 			{
 				return (this.FlagString != null && this.Value == null);
 			}
-			
-
+		
 			public Flag(string flagString)
 			{
 				this.FlagString = flagString;
@@ -153,7 +152,7 @@ namespace OpenShell
 			this.Flags = null;
 
 			if (command == null || command == "")
-			{
+			{	
 				this.CommandString = null;
 				this.Flags = null;
 				this.Aliases = null;
@@ -167,9 +166,10 @@ namespace OpenShell
 
 				this.Parameters = ArrayTools.OmitElementAtIndex<string>(SplittedString, 0);
 				this.Aliases = null;
-	
-				// ArrayTools.PrintArray<string>(this.Parameters);
+
 				this.Flags = this.GetFlags();
+
+				// ArrayTools.PrintArray<string>(this.Parameters);
 			}
 		}
 	
@@ -197,7 +197,6 @@ namespace OpenShell
 
 			this.Flags = defaultFlags;
 		}
-
 	}
 
 	public class CommandTools
@@ -214,7 +213,7 @@ namespace OpenShell
 		public CommandNotFoundException()
 		{
 			this.Message = "Command not found.";
-		}	
+		}
 
 		public CommandNotFoundException(string command)
 		{
@@ -262,7 +261,7 @@ namespace OpenShell
 	{	
 		public UnkownFlagException(string flagString)
 		{
-			this.Message = $"-{flagString} does not exist in the default flags.";
+			this.Message = $"{flagString} does not exist in the default flags.";
 		}
 	}
 }

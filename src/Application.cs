@@ -92,32 +92,51 @@ namespace OpenShell
 			
 			Stack<string> RawValueStack = new Stack<string>();
 
-			Command.Flag FlagTemp;	// = new Command.Flag();
+			Command.Flag FlagTemp;
 
-			try
-			{
-				for (int x = 0; x < this.Configuration.AppCommand.Parameters.Length; x++)
-					if (this.Configuration.AppCommand.Parameters[x][0] == '-')
-						if ((FlagTemp = this.GetFlag(this.Configuration.AppCommand.Parameters[x])).IsNull())	//	Flag doesnt exist  
-							continue;
+			for (int x = 0; x < this.Configuration.AppCommand.Parameters.Length; x++)
+			{	
+
+				try
+				{
+					if (this.Configuration.AppCommand.Parameters[x][0] == '-' || $"{this.Configuration.AppCommand.Parameters[x][0]}{this.Configuration.AppCommand.Parameters[x][1]}" == "--")
+					{
+						FlagTemp = this.GetFlag(this.Configuration.AppCommand.Parameters[x]);
+
+						if (FlagTemp.IsNull())	//	Flag doesnt exist  
+							throw new UnkownFlagException(this.Configuration.AppCommand.Parameters[x]);	
+							
 						else if (FlagTemp.FlagString != null && FlagTemp.Value == null)
-							SingleFlags.Push(FlagTemp);
-						else if (FlagTemp.FlagString != null && FlagTemp.Value != null)
+						{
+							SingleFlags.Push(FlagTemp);	
+
+							Program.Debug.Log($"Single Flag {FlagTemp.FlagString} was pushed.");
+						}
+						else if (FlagTemp.FlagString == null && FlagTemp.Value != null)
+						{
 							RawValueStack.Push(FlagTemp.Value);
+					
+							Program.Debug.Log($"Raw value {FlagTemp.Value} was pushed.");
+						}
 						else
 							throw new InvalidFlagException();
-			}
-			catch (InvalidFlagException e)
-			{
-				Program.Debug.Log(e.Message);
+					}
+				}
+				catch (Error e)
+				{
+				// Program.Debug.Log(e.Message);
+					e.Log();
 
-				return new ApplicationArgument();	//	returns a null instance
-			}
+					return new ApplicationArgument();	//	returns a null instance
+				}
 
-			argument = new ApplicationArgument(ArrayTools.InvertArray<Command.Flag>(FlagStack.ToArray()), SingleFlags.ToArray(),  RawValueStack.ToArray());
+					Console.WriteLine($"Iteration {x}");
+				}
+			
+			argument = new ApplicationArgument(ArrayTools.InvertArray<Command.Flag>(FlagStack.ToArray()), ArrayTools.InvertArray<Command.Flag>(SingleFlags.ToArray()),  ArrayTools.InvertArray<string>(RawValueStack.ToArray()));
 
 			return argument;
-		}
+		}	
 
 		/// <summary>
 		/// Formats raw paramter strings to ApplicationArgument
@@ -135,7 +154,6 @@ namespace OpenShell
 
 			Stack<string> RawValueStack = new Stack<string>();
 
-
 			if (parameters.Length == 0)
 				return applicationArgument;
 
@@ -150,7 +168,7 @@ namespace OpenShell
 								else
 									FlagStack.Push(FlagTemp);
 							else
-								throw new UnkownFlagException(FlagTemp.FlagString);
+								throw new UnkownFlagException(parameters[x]);
 
 						else
 							RawValueStack.Push(parameters[x]);
@@ -211,17 +229,34 @@ namespace OpenShell
 
 		public string Run()	//	Starts the app function
 		{
-			this.ApplicationFunction(this.GetApplicationArgument());
+			return this.ApplicationFunction(this.GetApplicationArgument());
+		}
 
-			return null;
+		public string Run(Command command)	//	Starts the app function
+		{		
+			if (command.CommandString != this.Configuration.AppCommand.CommandString)
+				return null;
+
+			this.Configuration.AppCommand = command;
+
+			Program.Debug.Log($"{this.Configuration.AppCommand.CommandString}");
+			
+			ArrayTools.PrintArray<string>(this.Configuration.AppCommand.Parameters);
+
+			return this.ApplicationFunction(this.GetApplicationArgument());
 		}
 
 		public Application()
 		{	
 			this.Configuration = new AppConfiguration();
-			this.ApplicationFunction = new aAppFunction((ApplicationArgument x) => null);
+			this.ApplicationFunction = new aAppFunction((ApplicationArgument x) => null);	
 		}
 
+		public Application(aAppFunction appFunction)
+		{	
+			this.ApplicationFunction = appFunction;
+			this.Configuration = new AppConfiguration();
+		}
 		public Application(AppConfiguration configuration, aAppFunction appFunction)
 		{	
 			this.Configuration = configuration;

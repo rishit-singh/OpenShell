@@ -5,6 +5,17 @@ using OpenShell.Errors;
 
 namespace OpenShell.Tools
 {
+	public class GeneralTools 
+	{
+		public static void Swap<T>(ref T a, ref T b)
+		{
+			T temp = a;
+
+			a = b; 
+			b = temp;
+		}
+	}
+
 	public class ArrayTools
 	{
 		public static void PrintArray<T>(T[] array)
@@ -72,18 +83,28 @@ namespace OpenShell.Tools
 					
 			return false;
 		}
+
+		public static Command.Flag[] BubbleSort(Command.Flag[] flagArray)
+		{
+			for (int x = 0; x < flagArray.Length - 1; x++)
+				for (int y = x + 1; y < flagArray.Length; y++)
+					if (flagArray[x].FlagString.CompareTo(flagArray[x + 1].FlagString) > 0)
+						GeneralTools.Swap<Command.Flag>(ref flagArray[x], ref flagArray[x + 1]);
+
+			return flagArray;
+		}
 		
 		public static int BinarySearch(string flagString, Command.Flag[] flags, int start, int end)
 		{
 			if (start < end)
 			{
-				int mid = start - end / 2;
+				int mid = (start + end) / 2;
 
-				if (flagString.CompareTo(flags[mid].FlagString) == -1)
-					ArrayTools.BinarySearch(flagString, flags, start, mid);
+				if (flagString.CompareTo(flags[mid].FlagString) < 0)
+					return ArrayTools.BinarySearch(flagString, flags, start, mid);
 
-				if (flagString.CompareTo(flags[mid].FlagString) == 1)
-					ArrayTools.BinarySearch(flagString, flags, mid, end);
+				if (flagString.CompareTo(flags[mid].FlagString) > 0)
+					return ArrayTools.BinarySearch(flagString, flags, mid, end);
 
 				if (flagString.CompareTo(flags[mid].FlagString) == 0)
 					return mid;
@@ -207,7 +228,7 @@ namespace OpenShell.Tools
 				return null;
 			}
 
-			for (int x = start; x <= end; x++)
+			for (int x = start; x < end; x++)
 				subString += str[x];
 
 			return subString;
