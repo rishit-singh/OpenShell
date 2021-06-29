@@ -21,7 +21,7 @@ namespace OpenShell
 			
 			private Stack<string> DefaultValueStack;	//	Stores temporary values to be asssigned added to the DefaulValues array later.
 
-				public string[] DefaultValues;	//	Default values of the flag.
+			public string[] DefaultValues;	//	Default values of the flag.
 
 			/// <summary>
 			/// IComparable<Command> interface implementation.
@@ -106,8 +106,7 @@ namespace OpenShell
 
 		public bool IsEqual(Command command)
 		{
-			return (this.CommandString == command.CommandString &&
-				Tools.ArrayTools.ArrayCmp<string>(this.Aliases, command.Aliases));
+			return (this.CommandString == command.CommandString && Tools.ArrayTools.ArrayCmp<string>(this.Aliases, command.Aliases));
 		}	
 
 		public string CommandString;	//	Command identifier string. 
@@ -115,14 +114,26 @@ namespace OpenShell
 		public string[] Aliases;	//	Aliases of the current command instances.
 
 		public string[] Parameters;	//	Parameters of the currentr command instances
-		
+
+		public Hashtable FlagHash;	//	Stores all the flags hashed to their flagstring values.
+
 		public Command.Flag[] Flags;	//	Flags of the current command instance
+
+		/// <summary>
+		/// Hashes all the flag instances stored in the Flags array to their FlagString.
+		/// </summary>
+		private void HashFlags()
+		{
+			this.FlagHash = new Hashtable();
+
+			for (int x = 0; x < this.Flags.Length; x++)
+				this.FlagHash.Add(this.Flags[x].FlagString, this.Flags[x]);		
+		}
 
 		/// <summary>
 		/// Generates an array of flag instances from the raw command string
 		/// </summary>
 		/// <returns> Flag instance array. </returns>
-
 		Command.Flag[] GetFlags()
 		{
 			char FlagChar = '-'; 
@@ -134,7 +145,7 @@ namespace OpenShell
 			for (int x = 0; x < this.Parameters.Length; x++)
 				if ((occuranceTemp = StringTools.GetContinousOccurance(FlagChar, this.Parameters[x], 0)) >= 1)
 				{
-					StringTools.OmitCharOccurances(this.Parameters[x][0], occuranceTemp, this.Parameters[x]);  
+					Parameters[x] = StringTools.OmitCharOccurances(this.Parameters[x][0], occuranceTemp, this.Parameters[x]);  
 
 					if (x >= (Parameters.Length - 1))
 						continue;
@@ -150,6 +161,7 @@ namespace OpenShell
 		public Command(string command)
 		{
 			this.Flags = null;
+			this.FlagHash = new Hashtable();
 
 			if (command == null || command == "")
 			{	
@@ -168,6 +180,7 @@ namespace OpenShell
 				this.Aliases = null;
 
 				this.Flags = this.GetFlags();
+				this.HashFlags();
 
 				// ArrayTools.PrintArray<string>(this.Parameters);
 			}
@@ -176,6 +189,7 @@ namespace OpenShell
 		public Command(string command, Flag[] defaultFlags)
 		{
 			this.Flags = null;
+			this.FlagHash = new Hashtable();
 
 			if (command == null || command == "")
 			{
@@ -196,6 +210,8 @@ namespace OpenShell
 			}
 
 			this.Flags = defaultFlags;
+			
+			this.HashFlags();
 		}
 	}
 

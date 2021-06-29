@@ -249,7 +249,7 @@ namespace OpenShell
 			{
 				e.Log();
 			}
-
+			
 			return null;
 		}
 

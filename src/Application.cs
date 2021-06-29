@@ -71,11 +71,20 @@ namespace OpenShell
 		/// Returns the flag containing the provided flag string.
 		/// </summary>
 		/// <returns> Returns the flag with the provided flagstring. </returns>
-		private Command.Flag GetFlag(string flagString)
+		public Command.Flag GetFlag(string flagString)
 		{
-			int indexTemp;
+			Command.Flag flag = new Command.Flag();
 
-			return ((indexTemp = ArrayTools.BinarySearch(flagString, this.Configuration.AppCommand.Flags)) == -1) ? new Command.Flag() : this.Configuration.AppCommand.Flags[indexTemp];
+			try
+			{
+				flag = (Command.Flag)this.Configuration.AppCommand.FlagHash[flagString];
+			}
+			catch (KeyNotFoundException e)
+			{
+				new UnkownFlagException(flagString).Log();
+			}
+
+			return flag;
 		}
 
 		/// <summary>
@@ -88,39 +97,39 @@ namespace OpenShell
 			ApplicationArgument argument;
 
 			Stack<Command.Flag> FlagStack = new Stack<Command.Flag>(),
-				SingleFlags = new Stack<Command.Flag>();
-			
+			SingleFlags = new Stack<Command.Flag>();
+		
 			Stack<string> RawValueStack = new Stack<string>();
 
 			Command.Flag FlagTemp;
 
 			for (int x = 0; x < this.Configuration.AppCommand.Parameters.Length; x++)
-			{	
-
+			{
 				try
 				{
-					if (this.Configuration.AppCommand.Parameters[x][0] == '-' || $"{this.Configuration.AppCommand.Parameters[x][0]}{this.Configuration.AppCommand.Parameters[x][1]}" == "--")
+					// if (this.Configuration.AppCommand.Parameters[x][0] == '-' || $"{this.Configuration.AppCommand.Parameters[x][0]}{this.Configuration.AppCommand.Parameters[x][1]}" == "--")
+					// {
+					Program.Debug.Log("Flag CALLED!");
+
+					FlagTemp = this.GetFlag(this.Configuration.AppCommand.Parameters[x]);
+
+					if (FlagTemp.IsNull())	//	Flag doesnt exist  
+						throw new UnkownFlagException(this.Configuration.AppCommand.Parameters[x]);	
+						
+					else if (FlagTemp.FlagString != null && FlagTemp.Value == null)
 					{
-						FlagTemp = this.GetFlag(this.Configuration.AppCommand.Parameters[x]);
-
-						if (FlagTemp.IsNull())	//	Flag doesnt exist  
-							throw new UnkownFlagException(this.Configuration.AppCommand.Parameters[x]);	
-							
-						else if (FlagTemp.FlagString != null && FlagTemp.Value == null)
-						{
-							SingleFlags.Push(FlagTemp);	
-
-							Program.Debug.Log($"Single Flag {FlagTemp.FlagString} was pushed.");
-						}
-						else if (FlagTemp.FlagString == null && FlagTemp.Value != null)
-						{
-							RawValueStack.Push(FlagTemp.Value);
-					
-							Program.Debug.Log($"Raw value {FlagTemp.Value} was pushed.");
-						}
-						else
-							throw new InvalidFlagException();
+						SingleFlags.Push(FlagTemp);	
+						Program.Debug.Log($"Single Flag {FlagTemp.FlagString} was pushed.");
 					}
+					else if (FlagTemp.FlagString == null && FlagTemp.Value != null)
+					{
+						RawValueStack.Push(FlagTemp.Value);
+				
+						Program.Debug.Log($"Raw value {FlagTemp.Value} was pushed.");
+					}
+					else
+						throw new InvalidFlagException();
+					// }
 				}
 				catch (Error e)
 				{
@@ -207,6 +216,7 @@ namespace OpenShell
 					}
 					else if (flags[x].FlagString != null && flags[x].Value == null)
 						SingleFlags.Push(flags[x]);
+					
 					else if (flags[x].FlagString == null && flags[x].Value != null)
 						RawValueStack.Push(flags[x].Value);
 					else

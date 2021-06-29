@@ -22,6 +22,12 @@ namespace CSharp_DebugTools
 	
 	public class GeneralTools
 	{
+
+		/// <summary>
+		/// Prints the provided array.
+		/// </summary>
+		/// <param name="array"> Array to be printed </param>
+		/// <typeparam name="T"> Type of the array. </typeparam>
 		public static void PrintArray<T>(T[] array)
 		{
 			for (int x = 0; x < array.Length; x++)

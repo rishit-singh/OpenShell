@@ -10,23 +10,14 @@ namespace OpenShell
 
 		static void Main(string[] args)
 		{	
-			// Command.Flag[] flags = new Command.Flag[] {
-			// 	new Command.Flag("flag"),
-			// 	new Command.Flag("flag1"),
-			// 	new Command.Flag("flag3"),
-			// 	new Command.Flag("flag2")
-			// };
-
-			// Tools.ArrayTools.BubbleSort(flags);
-
-			// for (int x = 0; x < flags.Length; x++)
-			// 	Debug.Log(flags[x].FlagString);
-
-			// Console.WriteLine();
-
-			// Debug.Log($"{Tools.ArrayTools.BinarySearch("flag", flags, 0, flags.Length)}");
 
 			Application application = new Application(new AppConfiguration("Foo", new Command("foo", new Command.Flag[] { new Command.Flag("flag"), new Command.Flag("flag1") } )),
+													(ApplicationArgument applicationArgument) => {
+															// Program.PrintApplicationArgument(applicationArgument);
+															return null;
+														}
+													), 
+													application1 = new Application(new AppConfiguration("Foo1", new Command("foo1", new Command.Flag[] { new Command.Flag("flag"), new Command.Flag("flag1") } )),
 													(ApplicationArgument applicationArgument) => {
 															// Program.PrintApplicationArgument(applicationArgument);
 															return null;
@@ -34,25 +25,26 @@ namespace OpenShell
 													);
 
 
-			application.Run();
-
-			// Shell shell = new Shell(new Application[] { new Application(new AppConfiguration("TestApp", new Command("command")), new sAppFunction((string[] args) => { return "app called"; })), new Application(new AppConfiguration("TestApp", new Command("command1")), new sAppFunction((string[] args) => { return "app1 called"; })) } );
-			
-			Shell shell = new Shell(new Application[] { application });
+			Shell shell = new Shell(new Application[] { application, application1 });
 
 			shell.PromptString = "osh";
 
 			shell.AddApplication(new Application(
 				new AppConfiguration("clear", new Command("clear")),
 						new aAppFunction((ApplicationArgument args) => {
-						Console.Clear();
-						shell.RunShellLoop();
+							Console.Clear();
+						
+							shell.RunShellLoop();
 					
-						return null;
-					})
+							return null;
+						})
 				));
 
-			shell.Start(); 
+			// Program.Debug.Log($"FlagString: {application.GetFlag("flag").FlagString}");			
+
+			shell.Start();
+
+			return; 
 		}  
 
 		public static void PrintApplicationArgument(ApplicationArgument applicationArgument)

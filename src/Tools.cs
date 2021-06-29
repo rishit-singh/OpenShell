@@ -180,17 +180,17 @@ namespace OpenShell.Tools
 		public static int GetContinousOccurance(char chr, string str, int start)
 		{
 			int Occurance = 0;
-			
-			try
-			{
-				for (int x = start; str[x] == chr; x++)
-					Occurance++;	
-			}
-			catch (IndexOutOfRangeException)
+
+			if (start > str.Length)
 			{
 				Error.Log("Provided index is out of the range of the provided string");
+
+				return Occurance;
 			}
-	
+
+			for (int x = start; str[x] == chr; x++)
+				Occurance++;	
+
 			return Occurance;
 		}
 		
