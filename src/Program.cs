@@ -13,7 +13,7 @@ namespace OpenShell
 		{
 			Application application = new Application(new AppConfiguration("Foo", new Command("foo", new Command.Flag[] { new Command.Flag("flag"), new Command.Flag("flag1") } )),
 													(ApplicationArgument applicationArgument) => {
-															// Program.PrintApplicationArgument(applicationArgument);
+															Program.PrintApplicationArgument(applicationArgument);
 															return null;
 														}
 													), 

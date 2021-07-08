@@ -253,13 +253,9 @@ namespace OpenShell
 			if (command.CommandString != this.Configuration.AppCommand.CommandString)
 				return null;
 
-			this.Configuration.AppCommand = command;
+			ArrayTools.PrintArray<string>(command.Parameters);
 
-			Program.Debug.Log($"{this.Configuration.AppCommand.CommandString}");
-			
-			ArrayTools.PrintArray<string>(this.Configuration.AppCommand.Parameters);
-
-			return this.ApplicationFunction(this.GetApplicationArgument());
+			return this.ApplicationFunction(this.GetApplicationArgument(command.Parameters));
 		}
 
 		public Application()
