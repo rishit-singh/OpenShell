@@ -1,6 +1,7 @@
 ﻿using System;
 using CSharp_DebugTools;
-
+using System.Collections;
+using System.Collections.Generic;
 
 namespace OpenShell
 {
@@ -9,11 +10,10 @@ namespace OpenShell
 		public static Debugger Debug = new Debugger();
 
 		static void Main(string[] args)
-		{	
-
+		{
 			Application application = new Application(new AppConfiguration("Foo", new Command("foo", new Command.Flag[] { new Command.Flag("flag"), new Command.Flag("flag1") } )),
 													(ApplicationArgument applicationArgument) => {
-															// Program.PrintApplicationArgument(applicationArgument);
+															Program.PrintApplicationArgument(applicationArgument);
 															return null;
 														}
 													), 
@@ -24,23 +24,20 @@ namespace OpenShell
 														}
 													);
 
-
 			Shell shell = new Shell(new Application[] { application, application1 });
 
 			shell.PromptString = "osh";
 
 			shell.AddApplication(new Application(
 				new AppConfiguration("clear", new Command("clear")),
-						new aAppFunction((ApplicationArgument args) => {
+						new aAppFunction((ApplicationArgument args) => {							
 							Console.Clear();
 						
 							shell.RunShellLoop();
 					
 							return null;
 						})
-				));
-
-			// Program.Debug.Log($"FlagString: {application.GetFlag("flag").FlagString}");			
+				));			
 
 			shell.Start();
 

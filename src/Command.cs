@@ -118,7 +118,6 @@ namespace OpenShell
 		public Hashtable FlagHash;	//	Stores all the flags hashed to their flagstring values.
 
 		public Command.Flag[] Flags;	//	Flags of the current command instance
-
 		/// <summary>
 		/// Hashes all the flag instances stored in the Flags array to their FlagString.
 		/// </summary>
@@ -128,35 +127,37 @@ namespace OpenShell
 
 			for (int x = 0; x < this.Flags.Length; x++)
 				this.FlagHash.Add(this.Flags[x].FlagString, this.Flags[x]);		
+
+			Program.Debug.Log($"FlagHash.Count: {this.FlagHash.Count}");
 		}
 
 		/// <summary>
 		/// Generates an array of flag instances from the raw command string
 		/// </summary>
 		/// <returns> Flag instance array. </returns>
-		Command.Flag[] GetFlags()
-		{
-			char FlagChar = '-'; 
+		// Command.Flag[] GetFlags()
+		// {
+		// 	char FlagChar = '-'; 
 
-			int occuranceTemp = 0;
+		// 	int occuranceTemp = 0;
 
-			Stack<Flag> FlagStack = new Stack<Flag>(); 
+		// 	Stack<Flag> FlagStack = new Stack<Flag>();
+			 
+		// 	for (int x = 0; x < this.Parameters.Length; x++)
+		// 		if (Parameters[x][0] == FlagChar)
+		// 		{
+		// 			Program.Debug.Log($"Paramters[x]: {Parameters[x] = StringTools.OmitCharOccurances(this.Parameters[x][0], occuranceTemp, this.Parameters[x])}"); 
 
-			for (int x = 0; x < this.Parameters.Length; x++)
-				if ((occuranceTemp = StringTools.GetContinousOccurance(FlagChar, this.Parameters[x], 0)) >= 1)
-				{
-					Parameters[x] = StringTools.OmitCharOccurances(this.Parameters[x][0], occuranceTemp, this.Parameters[x]);  
+		// 			if (x >= (Parameters.Length - 1))
+		// 				continue;
 
-					if (x >= (Parameters.Length - 1))
-						continue;
+		// 			FlagStack.Push(new Command.Flag(this.Parameters[x], this.Parameters[x + 1])); 
 
-					FlagStack.Push(new Command.Flag(this.Parameters[x], this.Parameters[x + 1])); 
+		// 			x += 2;
+		// 		}
 
-					x += 2;
-				}
-
-			return FlagStack.ToArray(); 
-		}
+		// 	return FlagStack.ToArray(); 
+		// }
 
 		public Command(string command)
 		{
@@ -179,8 +180,14 @@ namespace OpenShell
 				this.Parameters = ArrayTools.OmitElementAtIndex<string>(SplittedString, 0);
 				this.Aliases = null;
 
-				this.Flags = this.GetFlags();
+				this.Flags  = new Command.Flag[] {};
+
 				this.HashFlags();
+
+				// Program.Debug.Log($"InputFlagSize: {this.InputFlags.Length}");
+
+				// for (int x = 0; x < this.InputFlags.Length; x++)
+				// 	Program.Debug.Log($"InputFlagName: {this.InputFlags[x].FlagString}");
 
 				// ArrayTools.PrintArray<string>(this.Parameters);
 			}
@@ -208,9 +215,9 @@ namespace OpenShell
 	
 				// ArrayTools.PrintArray<string>(this.Parameters);
 			}
-
-			this.Flags = defaultFlags;
 			
+			this.Flags = defaultFlags;
+
 			this.HashFlags();
 		}
 	}

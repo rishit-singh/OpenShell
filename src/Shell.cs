@@ -19,13 +19,13 @@ namespace OpenShell
 	
 		private bool IsRunning = false;	//	Represents the status of the shell		public string PromptString;	//	String to be used as a prompting message for default shell prompts.
 	
-		public string PromptString;
+		public string PromptString;	//	String to be printed before the prompt character.
 
 		/// <summary>
 		/// Adds all the provided application instances to the ApplicationStack
 		/// </summary>
 		/// <param name="applications"></param>
-		/// <returns></returns>
+		/// <returns> Bool reperesenting if the ApplicationStack was built. </returns>
 		private bool BuildApplicationStack(Application[] applications)
 		{
 			if (applications.Length <= 0)
@@ -67,14 +67,12 @@ namespace OpenShell
 			try 
 			{
 				if ((application = this.GetHashedApplication(command.CommandString)) == null)
-				{
 					throw new UnhashedApplicationsException();
-				}
 			
 				Console.WriteLine($"Function Call {application.Run()}");
 
 				return application;
-			}
+			} 
 			catch (UnhashedApplicationsException e)
 			{
 				e.Log();
@@ -87,7 +85,7 @@ namespace OpenShell
 		/// Returns the app function hashed to the provided command.
 		/// </summary>
 		/// <param name="command"></param>
-		/// <returns></returns>
+		/// <returns> The hashed application function. </returns>
 		private Application GetHashedApplication(string command)
 		{
 			Application application = null;
@@ -101,7 +99,7 @@ namespace OpenShell
 					try
 					{
 						application = (Application)this.ApplicationHash[command];
-					}
+					}	
 					catch (KeyNotFoundException e)
 					{
 						Error.Log(e);
@@ -110,12 +108,11 @@ namespace OpenShell
 					}
 				else
 					throw new UnhashedApplicationsException();
-					
 			}
 			catch (UnhashedApplicationsException e)
 			{
 				e.Log();
-			}	
+			}
 
 			return application;
 		}
@@ -205,11 +202,9 @@ namespace OpenShell
 		/// Executes the provided command.
 		/// </summary>
 		/// <param name="command"> Command to be executed. </param>
-		/// <returns> Delegates refering to the respective command, null when invalid. </returns>
+		/// <returns> Delegates refering to the reDEspective command, null when invalid. </returns>
 		public string ExecuteCommand(Command command)
 		{
-			Program.Debug.Log($"CommandString: {command.CommandString}");
-
 			try
 			{
 				if (this.AppsHashed)
@@ -222,7 +217,7 @@ namespace OpenShell
 
 						case "exit":
 							this.Terminate();
-							
+								
 							break;
 
 						default:
@@ -231,7 +226,11 @@ namespace OpenShell
 								Application application = null;
 
 								if ((application = this.GetApplication(command)) != null)
+								{
+									Program.Debug.Log($"Application Hash Size: {application.Configuration.AppCommand.FlagHash.Count}");		
+									
 									return application.Run(command);
+								}
 		
 								throw new CommandNotFoundException(command);
 							}
@@ -253,12 +252,15 @@ namespace OpenShell
 			return null;
 		}
 
+		/// <summary>
+		/// Ends the shell loop.
+		/// </summary>
 		public void Terminate()
 		{
 			this.IsRunning = false;
 		}
 
-		public Shell() 
+		public Shell()
 		{
 			this.PromptString = null;
 			this.ApplicationHash = null;			
@@ -267,7 +269,7 @@ namespace OpenShell
 		public Shell(string prompt) 
 		{
 			this.PromptString = prompt ;
-			this.ApplicationHash = null;		
+				this.ApplicationHash = null;		
 		}
 
 		public Shell(Application[] apps)

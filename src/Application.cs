@@ -73,18 +73,23 @@ namespace OpenShell
 		/// <returns> Returns the flag with the provided flagstring. </returns>
 		public Command.Flag GetFlag(string flagString)
 		{
-			Command.Flag flag = new Command.Flag();
 
+			string newFlagString = StringTools.OmitCharOccurances('-', (flagString[1] == '-') ? 2 : 1, flagString);
+
+			Program.Debug.Log($"Recieved flag string: {newFlagString}");
+			
 			try
 			{
-				flag = (Command.Flag)this.Configuration.AppCommand.FlagHash[flagString];
+				Program.Debug.Log($"Hashtable size: {this.Configuration.AppCommand.FlagHash.Count}");
+				
+				return ((Command.Flag)this.Configuration.AppCommand.FlagHash[newFlagString]);
 			}
-			catch (KeyNotFoundException e)
+			catch (NullReferenceException e)
 			{
 				new UnkownFlagException(flagString).Log();
 			}
 
-			return flag;
+			return new Command.Flag();
 		}
 
 		/// <summary>
@@ -107,29 +112,27 @@ namespace OpenShell
 			{
 				try
 				{
-					// if (this.Configuration.AppCommand.Parameters[x][0] == '-' || $"{this.Configuration.AppCommand.Parameters[x][0]}{this.Configuration.AppCommand.Parameters[x][1]}" == "--")
-					// {
-					Program.Debug.Log("Flag CALLED!");
+					if (this.Configuration.AppCommand.Parameters[x][0] == '-')
+					{
+						Program.Debug.Log("Flag Called!");
 
-					FlagTemp = this.GetFlag(this.Configuration.AppCommand.Parameters[x]);
-
-					if (FlagTemp.IsNull())	//	Flag doesnt exist  
-						throw new UnkownFlagException(this.Configuration.AppCommand.Parameters[x]);	
+						FlagTemp = this.GetFlag(this.Configuration.AppCommand.Parameters[x]);
 						
-					else if (FlagTemp.FlagString != null && FlagTemp.Value == null)
-					{
-						SingleFlags.Push(FlagTemp);	
-						Program.Debug.Log($"Single Flag {FlagTemp.FlagString} was pushed.");
-					}
-					else if (FlagTemp.FlagString == null && FlagTemp.Value != null)
-					{
-						RawValueStack.Push(FlagTemp.Value);
-				
-						Program.Debug.Log($"Raw value {FlagTemp.Value} was pushed.");
+						if (FlagTemp.IsNull())	//	Flag doesnt exist  
+							throw new UnkownFlagException(this.Configuration.AppCommand.Parameters[x]);	
+						
+						else if (FlagTemp.FlagString != null && FlagTemp.Value == null)
+						{
+							SingleFlags.Push(FlagTemp);	
+							Program.Debug.Log($"Single Flag {FlagTemp.FlagString} was pushed.");
+						}						
+						else
+							throw new InvalidFlagException();
 					}
 					else
-						throw new InvalidFlagException();
-					// }
+					{
+						RawValueStack.Push(this.Configuration.AppCommand.Parameters[x]);
+					}
 				}
 				catch (Error e)
 				{
@@ -193,7 +196,12 @@ namespace OpenShell
 			
 			return applicationArgument;
 		}
-
+		
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="flags"></param>
+		/// <returns></returns>
 		public ApplicationArgument GetApplicationArgument(Command.Flag[] flags)
 		{
 			ApplicationArgument argument;
@@ -210,20 +218,18 @@ namespace OpenShell
 				for (int x = 0; x < flags.Length; x++)
 					if (flags[x].IsNull())	//	Flag doesnt exist  
 						continue;
+				
 					else if (flags[x].FlagString != null && flags[x].Value != null )
-					{
 						FlagStack.Push(flags[x]);
-					}
+					
 					else if (flags[x].FlagString != null && flags[x].Value == null)
 						SingleFlags.Push(flags[x]);
 					
 					else if (flags[x].FlagString == null && flags[x].Value != null)
 						RawValueStack.Push(flags[x].Value);
+				
 					else
-					{
-						Program.Debug.Log($"FlagString: {flags[x].FlagString}\nValue: {flags[x].Value}\n");
 						throw new InvalidFlagException();
-					}
 			}
 			catch (Exception e)
 			{
@@ -247,13 +253,9 @@ namespace OpenShell
 			if (command.CommandString != this.Configuration.AppCommand.CommandString)
 				return null;
 
-			this.Configuration.AppCommand = command;
+			ArrayTools.PrintArray<string>(command.Parameters);
 
-			Program.Debug.Log($"{this.Configuration.AppCommand.CommandString}");
-			
-			ArrayTools.PrintArray<string>(this.Configuration.AppCommand.Parameters);
-
-			return this.ApplicationFunction(this.GetApplicationArgument());
+			return this.ApplicationFunction(this.GetApplicationArgument(command.Parameters));
 		}
 
 		public Application()
