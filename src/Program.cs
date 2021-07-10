@@ -11,15 +11,13 @@ namespace OpenShell
 
 		static void Main(string[] args)
 		{
-			Application application = new Application(new AppConfiguration("Foo", new Command("foo", new Command.Flag[] { new Command.Flag("flag"), new Command.Flag("flag1") } )),
+			Application application = new Application(new AppConfiguration("Foo", new Command("foo", new Command.Flag[] { new Command.Flag("flag") { Value = "value" }, new Command.Flag("flag1") } )),
 													(ApplicationArgument applicationArgument) => {
-															Program.PrintApplicationArgument(applicationArgument);
 															return null;
 														}
 													), 
 													application1 = new Application(new AppConfiguration("Foo1", new Command("foo1", new Command.Flag[] { new Command.Flag("flag"), new Command.Flag("flag1") } )),
 													(ApplicationArgument applicationArgument) => {
-															// Program.PrintApplicationArgument(applicationArgument);
 															return null;
 														}
 													);
@@ -43,24 +41,5 @@ namespace OpenShell
 
 			return; 
 		}  
-
-		public static void PrintApplicationArgument(ApplicationArgument applicationArgument)
-		{
-			Console.WriteLine("Flags:");
-			for (int x = 0; x < applicationArgument.Flags.Length; x++)
-				Console.WriteLine($"{applicationArgument.Flags[x].FlagString}: {applicationArgument.Flags[x].Value}");
-
-			Console.WriteLine('\n');
-
-			Console.WriteLine("Single Flags:");
-			for (int x = 0; x < applicationArgument.SingleFlags.Length; x++)
-				Console.WriteLine($"{applicationArgument.SingleFlags[x].FlagString}");
-
-			Console.WriteLine('\n');
-
-			Console.WriteLine("Raw Values:");
-			for (int x = 0; x < applicationArgument.RawValues.Length; x++)
-				Console.WriteLine($"{applicationArgument.RawValues[x]}");
-		}	
 	}
 }

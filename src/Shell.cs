@@ -226,11 +226,7 @@ namespace OpenShell
 								Application application = null;
 
 								if ((application = this.GetApplication(command)) != null)
-								{
-									Program.Debug.Log($"Application Hash Size: {application.Configuration.AppCommand.FlagHash.Count}");		
-									
 									return application.Run(command);
-								}
 		
 								throw new CommandNotFoundException(command);
 							}

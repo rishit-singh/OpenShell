@@ -18,11 +18,14 @@ namespace OpenShell
 		string Run();
 	}
 
-	public struct AppConfiguration	//	Stores the app configuration
+	/// <summary>
+	/// Stores the app configuration.
+	/// </summary>
+	public struct AppConfiguration	
 	{
-		public string AppName;	//	Name of the app 
+		public string AppName;	//	Name of the app.
 		
-		public Command AppCommand; 
+		public Command AppCommand;	//	Command instance of the app.
 
 		public AppConfiguration(string appName, Command appCommand)
 		{
@@ -31,6 +34,9 @@ namespace OpenShell
 		}
 	}
 
+	/// <summary>
+	/// Argument of an Application function.
+	/// </summary>
 	public struct ApplicationArgument
 	{
 		public Command.Flag[] Flags,
@@ -59,7 +65,9 @@ namespace OpenShell
 			this.RawValues = null;
 		}
 	}
-
+	/// <summary>
+	///	Stores the Application function and its configuration. 
+	/// </summary>
 	[Serializable]
 	public class Application : IApplication
 	{
@@ -73,15 +81,10 @@ namespace OpenShell
 		/// <returns> Returns the flag with the provided flagstring. </returns>
 		public Command.Flag GetFlag(string flagString)
 		{
-
 			string newFlagString = StringTools.OmitCharOccurances('-', (flagString[1] == '-') ? 2 : 1, flagString);
-
-			Program.Debug.Log($"Recieved flag string: {newFlagString}");
 			
 			try
 			{
-				Program.Debug.Log($"Hashtable size: {this.Configuration.AppCommand.FlagHash.Count}");
-				
 				return ((Command.Flag)this.Configuration.AppCommand.FlagHash[newFlagString]);
 			}
 			catch (NullReferenceException e)
@@ -114,18 +117,14 @@ namespace OpenShell
 				{
 					if (this.Configuration.AppCommand.Parameters[x][0] == '-')
 					{
-						Program.Debug.Log("Flag Called!");
-
 						FlagTemp = this.GetFlag(this.Configuration.AppCommand.Parameters[x]);
 						
 						if (FlagTemp.IsNull())	//	Flag doesnt exist  
 							throw new UnkownFlagException(this.Configuration.AppCommand.Parameters[x]);	
 						
 						else if (FlagTemp.FlagString != null && FlagTemp.Value == null)
-						{
-							SingleFlags.Push(FlagTemp);	
-							Program.Debug.Log($"Single Flag {FlagTemp.FlagString} was pushed.");
-						}						
+							SingleFlags.Push(FlagTemp);
+
 						else
 							throw new InvalidFlagException();
 					}
@@ -136,14 +135,11 @@ namespace OpenShell
 				}
 				catch (Error e)
 				{
-				// Program.Debug.Log(e.Message);
 					e.Log();
 
 					return new ApplicationArgument();	//	returns a null instance
 				}
-
-					Console.WriteLine($"Iteration {x}");
-				}
+			}
 			
 			argument = new ApplicationArgument(ArrayTools.InvertArray<Command.Flag>(FlagStack.ToArray()), ArrayTools.InvertArray<Command.Flag>(SingleFlags.ToArray()),  ArrayTools.InvertArray<string>(RawValueStack.ToArray()));
 
@@ -164,26 +160,37 @@ namespace OpenShell
 			Stack<Command.Flag> FlagStack = new Stack<Command.Flag>(),
 								SingleFlagStack = new Stack<Command.Flag>(); 
 
-			Stack<string> RawValueStack = new Stack<string>();
-
 			if (parameters.Length == 0)
 				return applicationArgument;
+
+			Stack<string> RawValueStack = new Stack<string>();
 
 			try
 			{
 				for (int x = 0; x < parameters.Length; x++)
-					if (parameters[x] != null)
-						if (parameters[x][0] == '-' || $"{parameters[x][0]}{parameters[x][1]}" == "--")		//	Checks for the flag prefixes.
-							if (!(FlagTemp = this.GetFlag(StringTools.GetSubString(parameters[x], 1, parameters[x].Length))).IsEqual(new Command.Flag()))	//	Flag null check.
-								if (FlagTemp.IsSingle())
-									SingleFlagStack.Push(FlagTemp);
-								else
-									FlagStack.Push(FlagTemp);
+					if (parameters[x][0] == '-')		//	Checks for the flag prefixes.
+						if (!(FlagTemp = this.GetFlag(parameters[x])).IsNull())	//	Flag null check.
+							if (FlagTemp.IsSingle())
+								SingleFlagStack.Push(FlagTemp);
+							
 							else
-								throw new UnkownFlagException(parameters[x]);
+							{
+								FlagStack.Push(FlagTemp);
+							
+								if (x < (parameters.Length - 1))							
+									if (FlagTemp.Value == parameters[x + 1]) 
+									{	
+										x++;
 
+										continue;
+									}
+							}
+								
 						else
-							RawValueStack.Push(parameters[x]);
+							throw new UnkownFlagException(parameters[x]);
+
+					else
+						RawValueStack.Push(parameters[x]);
 			}
 			catch (UnkownFlagException e)
 			{
