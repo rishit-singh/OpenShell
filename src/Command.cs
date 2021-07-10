@@ -127,37 +127,7 @@ namespace OpenShell
 
 			for (int x = 0; x < this.Flags.Length; x++)
 				this.FlagHash.Add(this.Flags[x].FlagString, this.Flags[x]);		
-
-			Program.Debug.Log($"FlagHash.Count: {this.FlagHash.Count}");
 		}
-
-		/// <summary>
-		/// Generates an array of flag instances from the raw command string
-		/// </summary>
-		/// <returns> Flag instance array. </returns>
-		// Command.Flag[] GetFlags()
-		// {
-		// 	char FlagChar = '-'; 
-
-		// 	int occuranceTemp = 0;
-
-		// 	Stack<Flag> FlagStack = new Stack<Flag>();
-			 
-		// 	for (int x = 0; x < this.Parameters.Length; x++)
-		// 		if (Parameters[x][0] == FlagChar)
-		// 		{
-		// 			Program.Debug.Log($"Paramters[x]: {Parameters[x] = StringTools.OmitCharOccurances(this.Parameters[x][0], occuranceTemp, this.Parameters[x])}"); 
-
-		// 			if (x >= (Parameters.Length - 1))
-		// 				continue;
-
-		// 			FlagStack.Push(new Command.Flag(this.Parameters[x], this.Parameters[x + 1])); 
-
-		// 			x += 2;
-		// 		}
-
-		// 	return FlagStack.ToArray(); 
-		// }
 
 		public Command(string command)
 		{
@@ -183,13 +153,6 @@ namespace OpenShell
 				this.Flags  = new Command.Flag[] {};
 
 				this.HashFlags();
-
-				// Program.Debug.Log($"InputFlagSize: {this.InputFlags.Length}");
-
-				// for (int x = 0; x < this.InputFlags.Length; x++)
-				// 	Program.Debug.Log($"InputFlagName: {this.InputFlags[x].FlagString}");
-
-				// ArrayTools.PrintArray<string>(this.Parameters);
 			}
 		}
 	
@@ -212,8 +175,6 @@ namespace OpenShell
 
 				this.Parameters = ArrayTools.OmitElementAtIndex<string>(SplittedString, 0);
 				this.Aliases = null;
-	
-				// ArrayTools.PrintArray<string>(this.Parameters);
 			}
 			
 			this.Flags = defaultFlags;
